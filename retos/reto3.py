@@ -34,6 +34,26 @@ retorno estupendo y sea un desastre. Cuando eso pase, no lo arregle todavia.
 Anotelo, que de eso trata la clase.
 """
 
+#Antes de ejecutar el reto:
+#Espero que el agente caiga en una trampa de incentivos y se quede dando
+#vueltas en círculos al lado de la meta sin cruzarla jamás,
+#pues descubrirá que le resulta más rentable seguir cobrando
+#la pista de cercanía que terminar el juego. Debido a este
+#comportamiento circular, el agente agotará el tiempo límite
+#tardando 100 pasos por episodio y, aunque en su entrenamiento
+#creerá tener miles de puntos acumulados, en la prueba real obtendrá
+#un resultado pésimo de 0 % de éxito.
+
+
+#Despues de ejecutar el reto:
+#Antes de probar el código, esperaba que mi agente se quedara 
+#dando vueltas en círculos sin cruzar nunca la meta y fallara por
+#completo. Al ejecutarlo, me sorprendió ver que logró llegar al 
+#final el 100 % de las veces, pero no de la forma esperada: en lugar
+#de tomar el camino directo, aprendió una ruta llena de rodeos e 
+#ineficiencias por todo el tablero, lo que hizo que se engañara creyendo
+#que su desempeño era pésimo y dejara su resultado real muy lejos del óptimo.
+
 from __future__ import annotations
 
 # Estas dos las puede mover libremente.
@@ -51,19 +71,41 @@ def pasos_hasta_la_meta(pos: tuple[int, int]) -> int:
     return abs(pos[0] - META[0]) + abs(pos[1] - META[1])
 
 
+# Primera prueba sin arreglar
+#def mi_moldeado(
+    #anterior: tuple[int, int] | None,
+    #siguiente: tuple[int, int],
+    #terminal: bool,
+#) -> float:
+    #"""La recompensa extra de una transicion. **Esto es lo que usted escribe.**"""
+    # ── su respuesta va aqui ──────────────────────────────────────────────
+    
+    # Calculamos la distancia restante desde la casilla a la que acaba de llegar
+    #distancia = pasos_hasta_la_meta(siguiente)
+    
+    # Le damos un premio que crece a medida que la distancia a la meta se reduce.
+    # Usamos 20 como referencia de distancia máxima para que el premio siempre sea positivo.
+    #recompensa_estar_cerca = (20 - distancia) * ESCALA
+    
+    #return recompensa_estar_cerca
+
+# Arreglo de segunda prueba
 def mi_moldeado(
     anterior: tuple[int, int] | None,
     siguiente: tuple[int, int],
     terminal: bool,
 ) -> float:
-    """La recompensa extra de una transicion. **Esto es lo que usted escribe.**"""
-    # ── su respuesta va aqui ──────────────────────────────────────────────
+    """La recompensa extra de una transicion utilizando potenciales de Ng."""
+    # Si es el primer paso, no hay estado anterior para calcular la diferencia
+    if anterior is None:
+        return 0.0
     
-    # Calculamos la distancia restante desde la casilla a la que acaba de llegar
-    distancia = pasos_hasta_la_meta(siguiente)
+    # Definimos una función de potencial estrictamente positiva
+    # phi(s) = 20 - pasos_hasta_la_meta(s)
+    phi_anterior = 20 - pasos_hasta_la_meta(anterior)
+    phi_siguiente = 20 - pasos_hasta_la_meta(siguiente)
     
-    # Le damos un premio que crece a medida que la distancia a la meta se reduce.
-    # Usamos 20 como referencia de distancia máxima para que el premio siempre sea positivo.
-    recompensa_estar_cerca = (20 - distancia) * ESCALA
+    # Calculamos la diferencia de potencial descontada por el GAMMA del archivo
+    recompensa_shaping = (GAMMA * phi_siguiente - phi_anterior) * ESCALA
     
-    return recompensa_estar_cerca
+    return recompensa_shaping
