@@ -27,8 +27,8 @@ el estancamiento de la ávida.
 
 - Ganancia media a 500 rondas, contra las dos líneas base que mide el
   propio arnés: la ávida pura (+0,0160) y tirar al azar.
-- Brazos distintos usados, sobre 20 brazos seria un buen número de ganancia tocando
-  solo 2-3 brazos no cuenta como solución.
+- Brazos distintos usados entre 18 - 20 brazos seria un buen número de ganancia, ya que solo 
+  estaba tocando solo 2-3 brazos no cuenta como solución.
 
 4. Criterio de decisión
 
